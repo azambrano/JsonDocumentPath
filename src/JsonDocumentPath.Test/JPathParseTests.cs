@@ -237,8 +237,8 @@ namespace JDocument.Test
             BooleanQueryExpression expressions = (BooleanQueryExpression)((QueryFilter)path.Filters[1]).Expression;
             Assert.Equal(QueryOperator.Exists, expressions.Operator);
             List<PathFilter> paths = (List<PathFilter>)expressions.Left;
-            Assert.Equal(1, paths.Count);
             Assert.Equal("name", ((ScanFilter)paths[0]).Name);
+            Assert.Equal(1, paths.Count);
         }
 
         [Fact]
@@ -249,7 +249,7 @@ namespace JDocument.Test
             Assert.Equal("Blah", ((FieldFilter)path.Filters[0]).Name);
             BooleanQueryExpression expressions = (BooleanQueryExpression)((QueryFilter)path.Filters[1]).Expression;
             Assert.Equal(QueryOperator.Equals, expressions.Operator);
-            Assert.Equal("hi", expressions.Right);
+            Assert.Equal("hi", ((JsonElement)expressions.Right).GetString());
         }
 
         [Fact]
@@ -260,7 +260,7 @@ namespace JDocument.Test
             Assert.Equal("Blah", ((FieldFilter)path.Filters[0]).Name);
             BooleanQueryExpression expressions = (BooleanQueryExpression)((QueryFilter)path.Filters[1]).Expression;
             Assert.Equal(QueryOperator.Equals, expressions.Operator);
-            Assert.Equal("h'i", expressions.Right);
+            Assert.Equal("h'i", ((JsonElement)expressions.Right).GetString());
         }
 
         [Fact]
@@ -282,7 +282,7 @@ namespace JDocument.Test
             Assert.Equal("Blah", ((FieldFilter)path.Filters[0]).Name);
             BooleanQueryExpression expressions = (BooleanQueryExpression)((QueryFilter)path.Filters[1]).Expression;
             Assert.Equal(QueryOperator.RegexEquals, expressions.Operator);
-            Assert.Equal("/hi/i", expressions.Right);
+            Assert.Equal("/hi/i", ((JsonElement)expressions.Right).GetString());
         }
 
         [Fact]
@@ -293,7 +293,7 @@ namespace JDocument.Test
             Assert.Equal("Blah", ((FieldFilter)path.Filters[0]).Name);
             BooleanQueryExpression expressions = (BooleanQueryExpression)((QueryFilter)path.Filters[1]).Expression;
             Assert.Equal(QueryOperator.RegexEquals, expressions.Operator);
-            Assert.Equal("/^.*Sword.*$/", expressions.Right);
+            Assert.Equal("/^.*Sword.*$/", ((JsonElement)expressions.Right).GetString());
         }
 
         [Fact]
@@ -327,7 +327,7 @@ namespace JDocument.Test
             Assert.Equal("Blah", ((FieldFilter)path.Filters[0]).Name);
             BooleanQueryExpression expressions = (BooleanQueryExpression)((QueryFilter)path.Filters[1]).Expression;
             Assert.Equal(QueryOperator.Equals, expressions.Operator);
-            Assert.Equal(false, expressions.Right);
+            Assert.Equal(false, ((JsonElement)expressions.Right).GetBoolean());
         }
 
         [Fact]
@@ -338,7 +338,7 @@ namespace JDocument.Test
             Assert.Equal("Blah", ((FieldFilter)path.Filters[0]).Name);
             BooleanQueryExpression expressions = (BooleanQueryExpression)((QueryFilter)path.Filters[1]).Expression;
             Assert.Equal(QueryOperator.Equals, expressions.Operator);
-            Assert.Equal(true, expressions.Right);
+            Assert.Equal(true, ((JsonElement)expressions.Right).GetBoolean());
         }
 
         [Fact]
@@ -349,7 +349,7 @@ namespace JDocument.Test
             Assert.Equal("Blah", ((FieldFilter)path.Filters[0]).Name);
             BooleanQueryExpression expressions = (BooleanQueryExpression)((QueryFilter)path.Filters[1]).Expression;
             Assert.Equal(QueryOperator.Equals, expressions.Operator);
-            Assert.Equal(null, expressions.Right);
+            Assert.Equal(null, ((JsonElement)expressions.Right).GetObjectValue());
         }
 
         [Fact]

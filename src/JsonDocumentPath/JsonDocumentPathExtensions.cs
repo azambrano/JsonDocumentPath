@@ -65,5 +65,29 @@ namespace System.Text.Json
             }
             return el;
         }
+
+        /// <summary>
+        /// Gets the value of the element as a System.Object.
+        /// </summary>
+        public static object GetObjectValue(this JsonElement src)
+        {
+            if (src.ValueKind == JsonValueKind.Null)
+            {
+                return null;
+            }
+            if (src.ValueKind == JsonValueKind.String)
+            {
+                return src.GetString();
+            }
+            if (src.ValueKind == JsonValueKind.False || src.ValueKind == JsonValueKind.True)
+            {
+                return src.GetBoolean();
+            }
+            if (src.ValueKind == JsonValueKind.Number)
+            {
+                return src.GetDouble();
+            }
+            return src.GetRawText();
+        }
     }
 }

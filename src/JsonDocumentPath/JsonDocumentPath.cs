@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace System.Text.Json
 {
@@ -732,7 +733,9 @@ namespace System.Text.Json
                         }
                     }
 
-                    return _expression.Substring(startIndex, _currentIndex - startIndex);
+                    var demo = _expression.Substring(startIndex, _currentIndex - startIndex);
+                    // var escaped = Regex.Escape();
+                    return demo;
                 }
                 else
                 {
