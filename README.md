@@ -25,7 +25,7 @@ var results = models.SelectElements("$.persons[?(@.age > 3)]").ToList();
 ```
 
 ### Implementation
-#Json.Net Filters:
+#### Json.Net Filters:
 - [x] ArrayIndexFilter
 - [x] ArrayMultipleIndexFilter
 - [x] ArraySliceFilter
@@ -37,7 +37,7 @@ var results = models.SelectElements("$.persons[?(@.age > 3)]").ToList();
 - [ ] ScanFilter
 - [ ] ScanMultipleFilter
 
-#Json.Net Unit Test:
+#### Json.Net Unit Test:
 - [x] JPathParseTests
 - [x] QueryExpressionTests
 - [ ] JPathExecuteTests
