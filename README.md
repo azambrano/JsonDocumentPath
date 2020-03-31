@@ -25,6 +25,8 @@ var results = models.SelectElements("$.persons[?(@.age > 3)]").ToList();
 ```
 
 ### Implementation
+Because JsonDocumentPath is using the same Json.net strategic for parsing and evaluation the following is a list of pieces were already implemented:
+
 #### Json.Net Filters:
 - [x] ArrayIndexFilter
 - [x] ArrayMultipleIndexFilter
