@@ -451,7 +451,6 @@ namespace System.Text.Json
                 EatWhitespace();
                 EnsureLength("Path ended with open query.");
 
-                // return new JValue(value);
                 return SafeValue(value);
             }
 
@@ -673,6 +672,9 @@ namespace System.Text.Json
                             resolvedChar = '\r';
                             break;
                         case '\\':
+                            resolvedChar = '\\';
+                            sb.Append('\\');//duplicate
+                            break;
                         case '"':
                         case '\'':
                         case '/':
@@ -686,7 +688,8 @@ namespace System.Text.Json
 
                     _currentIndex++;
                 }
-                else if (currentChar == '\'')
+                else
+                if (currentChar == '\'')
                 {
                     _currentIndex++;
                     return sb.ToString();
@@ -703,7 +706,8 @@ namespace System.Text.Json
 
         private string ReadRegexString()
         {
-            int startIndex = _currentIndex;
+            StringBuilder sb = new StringBuilder();
+            sb.Append("\\/");
 
             _currentIndex++;
             while (_currentIndex < _expression.Length)
@@ -713,7 +717,20 @@ namespace System.Text.Json
                 // handle escaped / character
                 if (currentChar == '\\' && _currentIndex + 1 < _expression.Length)
                 {
-                    _currentIndex += 2;
+                    _currentIndex++;
+                    sb.Append(currentChar);
+                    sb.Append('\\');//duplicate
+
+                    //if the next char is '/' skip it.
+                    if (_currentIndex < _expression.Length)
+                    {
+                        currentChar = _expression[_currentIndex];
+                        if (currentChar == '/')
+                        {
+                            _currentIndex++;
+                            sb.Append(currentChar);
+                        }
+                    }
                 }
                 else if (currentChar == '/')
                 {
@@ -725,21 +742,31 @@ namespace System.Text.Json
 
                         if (char.IsLetter(currentChar))
                         {
+                            if (_expression[_currentIndex - 1] == '/')
+                            {
+                                sb.Append("\\/");
+                            }
+
                             _currentIndex++;
+                            sb.Append(currentChar);                           
                         }
                         else
                         {
+                            if (_expression[_currentIndex - 1] == '/')
+                            {
+                                sb.Append("\\/");
+                            }
+
                             break;
                         }
                     }
 
-                    var demo = _expression.Substring(startIndex, _currentIndex - startIndex);
-                    // var escaped = Regex.Escape();
-                    return demo;
+                    return sb.ToString();
                 }
                 else
                 {
                     _currentIndex++;
+                    sb.Append(currentChar);
                 }
             }
 

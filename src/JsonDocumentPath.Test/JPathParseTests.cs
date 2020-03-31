@@ -304,7 +304,7 @@ namespace JDocument.Test
             Assert.Equal("Blah", ((FieldFilter)path.Filters[0]).Name);
             BooleanQueryExpression expressions = (BooleanQueryExpression)((QueryFilter)path.Filters[1]).Expression;
             Assert.Equal(QueryOperator.RegexEquals, expressions.Operator);
-            Assert.Equal(@"/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g", expressions.Right);
+            Assert.Equal(@"/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g", ((JsonElement)expressions.Right).GetString());
         }
 
         [Fact]
