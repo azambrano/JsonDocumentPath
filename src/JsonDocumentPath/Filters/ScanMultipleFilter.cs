@@ -13,6 +13,8 @@ namespace System.Text.Json
 
         public override IEnumerable<JsonElement?> ExecuteFilter(JsonElement root, IEnumerable<JsonElement?> current, bool errorWhenNoMatch)
         {
+            throw new NotImplementedException("ScanMultipleFilter is not supported");
+
             foreach (JsonElement c in current)
             {
                 JsonElement? value = c;

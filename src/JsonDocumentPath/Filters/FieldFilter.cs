@@ -17,15 +17,25 @@ namespace System.Text.Json
             {
                 if (t.ValueKind == JsonValueKind.Object)
                 {
-                    if (t.TryGetProperty(Name, out JsonElement v))
+                    if (Name != null)
                     {
-                        if (v.ValueKind != JsonValueKind.Null)
+                        if (t.TryGetProperty(Name, out JsonElement v))
                         {
-                            yield return v;
+                            if (v.ValueKind != JsonValueKind.Null)
+                            {
+                                yield return v;
+                            }
+                            else if (errorWhenNoMatch)
+                            {
+                                throw new JsonException($"Property '{Name}' does not exist on JObject.");
+                            }
                         }
-                        else if (errorWhenNoMatch)
+                    }
+                    else
+                    {
+                        foreach (var p in t.ChildrenTokens())
                         {
-                            throw new JsonException($"Property '{Name}' does not exist on JObject.");
+                            yield return p;
                         }
                     }
                 }

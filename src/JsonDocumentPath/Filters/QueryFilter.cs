@@ -15,7 +15,7 @@ namespace System.Text.Json
         {
             foreach (JsonElement t in current)
             {
-                foreach (JsonElement v in t.Descendants())
+                foreach (JsonElement v in t.ChildrenTokens())
                 {
                     if (Expression.IsMatch(root, v))
                     {
