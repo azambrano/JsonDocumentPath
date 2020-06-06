@@ -1,7 +1,9 @@
 # JsonDocumentPath (Experimental)
 JsonDocumentPath is a class library to extract values from JSON (System.Text.Json.JsonDocument) with single line expressions
 
-The JsonPath parser is based on the [Json.Net](https://github.com/JamesNK/Newtonsoft.Json)
+The JsonPath parser is based on the [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
+
+[NuGet Package](https://www.nuget.org/packages/JsonDocumentPath)
 
 ### How to use it
 
@@ -36,11 +38,11 @@ Because JsonDocumentPath is using the same Json.net strategic for parsing and ev
 - [x] QueryFilter
 - [x] QueryScanFilter
 - [x] RootFilter
-- [ ] ScanFilter
-- [ ] ScanMultipleFilter
+- [ ] ScanFilter (Missing)
+- [ ] ScanMultipleFilter (Missing)
 
 #### Unit Test:
 - [x] JPathParseTests
 - [x] QueryExpressionTests
-- [ ] JPathExecuteTests
+- [ ] JPathExecuteTests (Incomplete)
 
