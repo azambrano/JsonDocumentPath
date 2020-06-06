@@ -35,28 +35,28 @@ namespace System.Text.Json
 
         protected static JsonElement? GetNextScanValue(JsonElement originalParent, JsonElement? container, JsonElement? value)
         {
-            // step into container's values
-            if (container != null && container.Value.TryGetFirstContainerValue(out JsonElement first))
-            {
-                value = first;
-            }
-            else
-            {
-                // finished container, move to parent
-                //while (value != null && value != originalParent && value == value.Parent!.Last)
-                //{
-                //    value = value.Parent;
-                //}
+            //// step into container's values
+            //if (container != null && container.Value.TryGetFirstContainerValue(out JsonElement first))
+            //{
+            //    value = first;
+            //}
+            //else
+            //{
+            //    // finished container, move to parent
+            //    //while (value != null && value != originalParent && value == value.Parent!.Last)
+            //    //{
+            //    //    value = value.Parent;
+            //    //}
 
-                //// finished
-                //if (value == null || value == originalParent)
-                //{
-                //    return null;
-                //}
+            //    //// finished
+            //    //if (value == null || value == originalParent)
+            //    //{
+            //    //    return null;
+            //    //}
 
-                //// move to next value in container
-                //value = value.Next;
-            }
+            //    //// move to next value in container
+            //    //value = value.Next;
+            //}
 
             return value;
         }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace System.Text.Json
 {
@@ -13,8 +14,6 @@ namespace System.Text.Json
 
         public override IEnumerable<JsonElement?> ExecuteFilter(JsonElement root, IEnumerable<JsonElement?> current, bool errorWhenNoMatch)
         {
-            throw new NotImplementedException("ScanFilter is not supported");
-
             foreach (JsonElement c in current)
             {
                 if (Name == null)
@@ -22,38 +21,35 @@ namespace System.Text.Json
                     yield return c;
                 }
 
-                JsonElement? value = c;
-
-                while (true)
+                var de = c.GetDescendantProperties().ToArray();
+                foreach (var el in de)
                 {
-                    JsonElement? container = value.IsContainer() ? value : new JsonElement?();
-                    value = GetNextScanValue(c, container, value);
+                    if (Name == el.Name)
+                    {
+                        yield return el.Value;
+                    }
 
-
-                    //JContainer? container = value as JContainer;
-
-                    //value = GetNextScanValue(c, container, value);
-                    //if (value == null)
-                    //{
-                    //    break;
-                    //}
-
-                    //if (value is JProperty property)
-                    //{
-                    //    if (property.Name == Name)
-                    //    {
-                    //        yield return property.Value;
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    if (Name == null)
-                    //    {
-                    //        yield return value;
-                    //    }
-                    //}
+                    if (Name == null)
+                    {
+                        yield return el.Value;
+                    }
                 }
             }
+        }
+    }
+
+
+    public class JsonElementWapper
+    {
+        private readonly JsonElement? el;
+        public JsonElementWapper(JsonElement? element)
+        {
+            el = element;
+        }
+
+        public bool IsContainer()
+        {
+            return el.IsContainer();
         }
     }
 }

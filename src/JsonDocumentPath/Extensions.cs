@@ -26,33 +26,69 @@ namespace System.Text.Json
             }
             return false;
         }
-        public static bool TryGetFirstContainerValue(this JsonElement? src, out JsonElement element)
+
+        public static bool TryGetFirstFromObject(this JsonElement? src, out JsonProperty? element)
         {
-            element = default;
+            element = null;
             if (src.HasValue)
             {
-                return src.Value.TryGetFirstContainerValue(out element);
+                return src.Value.TryGetFirstFromObject(out element);
             }
             return false;
         }
-        public static bool TryGetFirstContainerValue(this JsonElement src, out JsonElement element)
-        {
-            element = default;
 
+        public static bool TryMoveNextFromObject(this JsonElement src, int cycle, out JsonProperty? element)
+        {
+            element = null;
             if (src.ValueKind == JsonValueKind.Object)
             {
-                var elValue = src.EnumerateObject().Current.Value;
-                if (elValue.ValueKind != JsonValueKind.Undefined)
+                var currentObject = src.EnumerateObject();
+                for (int i = 0; i < cycle; i++)
                 {
-                    element = elValue;
+                    currentObject.MoveNext();
+                }
+                element = currentObject.Current;
+                return true;
+            }
+            return false;
+        }
+
+        public static bool TryGetFirstFromObject(this JsonElement src, out JsonProperty? element)
+        {
+            element = null;
+            if (src.ValueKind == JsonValueKind.Object)
+            {
+                var currentObject = src.EnumerateObject();
+                if (currentObject.MoveNext())
+                {
+                    element = currentObject.Current;
+                    return true;
                 }
             }
+            return false;
+        }
 
+        public static bool TryGetFirstFromArray(this JsonElement? src, out JsonElement? element)
+        {
+            element = null;
+            if (src.HasValue)
+            {
+                return src.Value.TryGetFirstFromArray(out element);
+            }
+            return false;
+        }
+
+        public static bool TryGetFirstFromArray(this JsonElement src, out JsonElement? element)
+        {
+            element = null;
             if (src.ValueKind == JsonValueKind.Array && src.GetArrayLength() > 0)
             {
-                element = src.EnumerateArray().Current;
+                if (src.EnumerateArray().MoveNext())
+                {
+                    element = src.EnumerateArray().Current;
+                    return true;
+                }
             }
-
             return false;
         }
 
@@ -61,14 +97,14 @@ namespace System.Text.Json
             return source.SelectMany(j => j.DescendantsAndSelf());
         }
 
-        public static IEnumerable<JsonElement> Descendants(this JsonElement src)
+        public static IEnumerable<JsonElement> DescendantElements(this JsonElement src)
         {
-            return GetDescendants(src, false);
+            return GetDescendantElementsCore(src, false);
         }
 
         public static IEnumerable<JsonElement> DescendantsAndSelf(this JsonElement src)
         {
-            return GetDescendants(src, true);
+            return GetDescendantElementsCore(src, true);
         }
 
         public static IEnumerable<JsonElement> ChildrenTokens(this JsonElement src)
@@ -90,7 +126,7 @@ namespace System.Text.Json
             }
         }
 
-        internal static IEnumerable<JsonElement> GetDescendants(JsonElement src, bool self)
+        internal static IEnumerable<JsonElement> GetDescendantElementsCore(JsonElement src, bool self)
         {
             if (self)
             {
@@ -102,9 +138,51 @@ namespace System.Text.Json
                 yield return o;
                 if (o.IsContainer())
                 {
-                    foreach (JsonElement d in o.Descendants())
+                    foreach (JsonElement d in o.DescendantElements())
                     {
                         yield return d;
+                    }
+                }
+            }
+        }
+
+        public static IEnumerable<JsonProperty> GetDescendantProperties(this JsonElement src)
+        {
+            return GetDescendantPropertiesCore(src);
+        }
+
+        internal static IEnumerable<JsonProperty> GetDescendantPropertiesCore(JsonElement src)
+        {
+            foreach (JsonProperty o in src.ChildrenPropertiesCore())
+            {
+                yield return o;
+                if (o.Value.IsContainer())
+                {
+                    foreach (JsonProperty d in o.Value.GetDescendantProperties())
+                    {
+                        yield return d;
+                    }
+                }
+            }
+        }
+
+        internal static IEnumerable<JsonProperty> ChildrenPropertiesCore(this JsonElement src)
+        {
+            if (src.ValueKind == JsonValueKind.Object)
+            {
+                foreach (var item in src.EnumerateObject())
+                {
+                    yield return item;
+                }
+            }
+
+            if (src.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var item in src.EnumerateArray())
+                {
+                    foreach (JsonProperty o in item.ChildrenPropertiesCore())
+                    {
+                        yield return o;
                     }
                 }
             }
