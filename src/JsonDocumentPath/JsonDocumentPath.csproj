@@ -2,15 +2,19 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-	<AssemblyVersion>0.1.0.0</AssemblyVersion>
-	<FileVersion>0.1.0</FileVersion>
-	<Authors>Adanies Zambrano</Authors>
-	<Product>JsonDocumentPath</Product>
+    <PackageVersion>1.0.1-alpha</PackageVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Authors>Adanies Zambrano</Authors>
+    <Product>JsonDocumentPath</Product>
     <Description>JsonDocumentPath is a class library to extract values from JSON with single line expressions</Description>
     <Copyright>Copyright © Adanies Zambrano 2020</Copyright>
     <Summary>JsonDocumentPath is a class library to extract values from JSON (JsonDocument) with single line expressions</Summary>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Title>JsonDocumentPath</Title>
+    <PackageTags>JsonDocumentPath, Json, JsonDocument, JsonPath</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/azambrano/JsonDocumentPath</RepositoryUrl>
   </PropertyGroup>
 
 </Project>

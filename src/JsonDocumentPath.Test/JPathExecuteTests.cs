@@ -223,6 +223,43 @@ namespace JDocument.Test
         }
 
         [Fact]
+        public void ScanFilterDeepTrue()
+        {
+            string json = @"{
+                  ""elements"": [
+                    {
+                      ""id"": ""A"",
+                      ""children"": [
+                        {
+                          ""id"": ""AA"",
+                          ""children"": [
+                            {
+                              ""id"": ""AAA""
+                            },
+                            {
+                              ""id"": ""AAB""
+                            }
+                          ]
+                        },
+                        {
+                          ""id"": ""AB""
+                        }
+                      ]
+                    },
+                    {
+                      ""id"": ""B"",
+                      ""children"": []
+                    }
+                  ]
+                }";
+
+            var models = JsonDocument.Parse(json).RootElement;
+            var results = models.SelectElements("$.elements..[?(@.id=='AA')]").ToList();
+
+            Assert.Single(results);
+        }
+
+        [Fact]
         public void ScanQuoted()
         {
             string json = @"{
