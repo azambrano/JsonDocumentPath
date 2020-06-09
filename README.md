@@ -38,8 +38,8 @@ Because JsonDocumentPath is using the same Json.net strategic for parsing and ev
 - [x] QueryFilter
 - [x] QueryScanFilter
 - [x] RootFilter
-- [x] ScanFilter (Missing)
-- [x] ScanMultipleFilter (Missing)
+- [x] ScanFilter
+- [x] ScanMultipleFilter
 
 #### Unit Test:
 - [x] JPathParseTests
