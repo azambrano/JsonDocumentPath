@@ -241,7 +241,7 @@ namespace System.Text.Json
                 return false;
             }
 
-            return string.Equals(value.GetString(), queryValue.GetString(), StringComparison.Ordinal);
+            return string.Equals(value.ToString(), queryValue.GetString(), StringComparison.Ordinal);
         }
 
         internal static bool EqualsWithStrictMatch(JsonElement value, JsonElement queryValue)
@@ -274,7 +274,8 @@ namespace System.Text.Json
                 return true;
             }
 
-            if ((value.ValueKind == JsonValueKind.False || value.ValueKind == JsonValueKind.True) && (queryValue.ValueKind == JsonValueKind.False || queryValue.ValueKind == JsonValueKind.True))
+            if ((value.ValueKind == JsonValueKind.False || value.ValueKind == JsonValueKind.True) && 
+                (queryValue.ValueKind == JsonValueKind.False || queryValue.ValueKind == JsonValueKind.True))
             {
                 return value.GetBoolean() == queryValue.GetBoolean();
             }

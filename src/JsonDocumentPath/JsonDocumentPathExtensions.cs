@@ -10,6 +10,19 @@ namespace System.Text.Json
         /// <param name="path">
         /// A <see cref="String"/> that contains a JSONPath expression.
         /// </param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="JsonDocument"/> that contains the selected elements.</returns>
+
+        public static IEnumerable<JsonElement?> SelectElements(this JsonDocument src, string path)
+        {
+            return SelectElements(src.RootElement, path, false);
+        }
+
+        /// <summary>
+        /// Selects a collection of elements using a JSONPath expression.
+        /// </summary>
+        /// <param name="path">
+        /// A <see cref="String"/> that contains a JSONPath expression.
+        /// </param>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="JsonElement"/> that contains the selected elements.</returns>
 
         public static IEnumerable<JsonElement?> SelectElements(this JsonElement src, string path)
@@ -32,6 +45,32 @@ namespace System.Text.Json
         }
 
         /// <summary>
+        /// Selects a collection of elements using a JSONPath expression.
+        /// </summary>
+        /// <param name="path">
+        /// A <see cref="String"/> that contains a JSONPath expression.
+        /// </param>
+        /// <param name="errorWhenNoMatch">A flag to indicate whether an error should be thrown if no tokens are found when evaluating part of the expression.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="JsonDocument"/> that contains the selected elements.</returns>
+        public static IEnumerable<JsonElement?> SelectElements(this JsonDocument src, string path, bool errorWhenNoMatch)
+        {
+            var parser = new JsonDocumentPath(path);
+            return parser.Evaluate(src.RootElement, src.RootElement, errorWhenNoMatch);
+        }
+
+        /// <summary>
+        /// Selects a <see cref="JsonElement"/> using a JSONPath expression. Selects the token that matches the object path.
+        /// </summary>
+        /// <param name="path">
+        /// A <see cref="String"/> that contains a JSONPath expression.
+        /// </param>
+        /// <returns>A <see cref="JsonDocument"/>, or <c>null</c>.</returns>
+        public static JsonElement? SelectElement(this JsonDocument src, string path)
+        {
+            return SelectElement(src.RootElement, path, false);
+        }
+
+        /// <summary>
         /// Selects a <see cref="JsonElement"/> using a JSONPath expression. Selects the token that matches the object path.
         /// </summary>
         /// <param name="path">
@@ -41,6 +80,29 @@ namespace System.Text.Json
         public static JsonElement? SelectElement(this JsonElement src, string path)
         {
             return SelectElement(src, path, false);
+        }
+
+        /// <summary>
+        /// Selects a <see cref="JsonElement"/> using a JSONPath expression. Selects the token that matches the object path.
+        /// </summary>
+        /// <param name="path">
+        /// A <see cref="String"/> that contains a JSONPath expression.
+        /// </param>
+        /// <param name="errorWhenNoMatch">A flag to indicate whether an error should be thrown if no tokens are found when evaluating part of the expression.</param>
+        /// <returns>A <see cref="JsonDocument"/>.</returns>
+        public static JsonElement? SelectElement(this JsonDocument src, string path, bool errorWhenNoMatch)
+        {
+            var p = new JsonDocumentPath(path);
+            JsonElement? el = null;
+            foreach (JsonElement t in p.Evaluate(src.RootElement, src.RootElement, errorWhenNoMatch))
+            {
+                if (el != null)
+                {
+                    throw new JsonException("Path returned multiple tokens.");
+                }
+                el = t;
+            }
+            return el;
         }
 
         /// <summary>

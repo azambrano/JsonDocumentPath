@@ -15,21 +15,11 @@ namespace System.Text.Json
         {
             foreach (JsonElement t in current)
             {
-                if (t.IsContainer())
+                foreach (var (_, Value) in GetNextScanValue(t))
                 {
-                    foreach (JsonElement d in t.DescendantsAndSelf())
+                    if (Expression.IsMatch(root, Value))
                     {
-                        if (Expression.IsMatch(root, d))
-                        {
-                            yield return d;
-                        }
-                    }
-                }
-                else
-                {
-                    if (Expression.IsMatch(root, t))
-                    {
-                        yield return t;
+                        yield return Value;
                     }
                 }
             }

@@ -33,32 +33,32 @@ namespace System.Text.Json
             }
         }
 
-        protected static JsonElement? GetNextScanValue(JsonElement originalParent, JsonElement? container, JsonElement? value)
+        protected static IEnumerable<(string Name, JsonElement Value)> GetNextScanValue(JsonElement value)
         {
-            //// step into container's values
-            //if (container != null && container.Value.TryGetFirstContainerValue(out JsonElement first))
-            //{
-            //    value = first;
-            //}
-            //else
-            //{
-            //    // finished container, move to parent
-            //    //while (value != null && value != originalParent && value == value.Parent!.Last)
-            //    //{
-            //    //    value = value.Parent;
-            //    //}
+            yield return (null, value);
 
-            //    //// finished
-            //    //if (value == null || value == originalParent)
-            //    //{
-            //    //    return null;
-            //    //}
+            if (value.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var e in value.EnumerateArray())
+                {
+                    foreach (var c in GetNextScanValue(e))
+                    {
+                        yield return c;
+                    }
+                }
+            }
+            else if (value.ValueKind == JsonValueKind.Object)
+            {
+                foreach (var e in value.EnumerateObject())
+                {
+                    yield return (e.Name, e.Value);
 
-            //    //// move to next value in container
-            //    //value = value.Next;
-            //}
-
-            return value;
+                    foreach (var c in GetNextScanValue(e.Value))
+                    {
+                        yield return c;
+                    }
+                }
+            }
         }
     }
 }

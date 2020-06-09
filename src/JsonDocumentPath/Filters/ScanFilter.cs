@@ -16,40 +16,14 @@ namespace System.Text.Json
         {
             foreach (JsonElement c in current)
             {
-                if (Name == null)
+                foreach (var e in GetNextScanValue(c))
                 {
-                    yield return c;
-                }
-
-                var de = c.GetDescendantProperties().ToArray();
-                foreach (var el in de)
-                {
-                    if (Name == el.Name)
+                    if (e.Name == Name)
                     {
-                        yield return el.Value;
-                    }
-
-                    if (Name == null)
-                    {
-                        yield return el.Value;
+                        yield return e.Value;
                     }
                 }
             }
-        }
-    }
-
-
-    public class JsonElementWapper
-    {
-        private readonly JsonElement? el;
-        public JsonElementWapper(JsonElement? element)
-        {
-            el = element;
-        }
-
-        public bool IsContainer()
-        {
-            return el.IsContainer();
         }
     }
 }

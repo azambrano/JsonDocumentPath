@@ -13,13 +13,26 @@ namespace System.Text.Json
 
         public override IEnumerable<JsonElement?> ExecuteFilter(JsonElement root, IEnumerable<JsonElement?> current, bool errorWhenNoMatch)
         {
-            foreach (JsonElement t in current)
+            foreach (JsonElement el in current)
             {
-                foreach (JsonElement v in t.ChildrenTokens())
+                if (el.ValueKind == JsonValueKind.Array)
                 {
-                    if (Expression.IsMatch(root, v))
+                    foreach (JsonElement v in el.EnumerateArray())
                     {
-                        yield return v;
+                        if (Expression.IsMatch(root, v))
+                        {
+                            yield return v;
+                        }
+                    }
+                }
+                else if (el.ValueKind == JsonValueKind.Object)
+                {
+                    foreach (JsonProperty v in el.EnumerateObject())
+                    {
+                        if (Expression.IsMatch(root, v.Value))
+                        {
+                            yield return v.Value;
+                        }
                     }
                 }
             }
