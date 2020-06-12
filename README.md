@@ -21,7 +21,7 @@ The JsonPath parser is based on the [Newtonsoft.Json](https://github.com/JamesNK
     ]
   }";
 
-var models = JsonDocument.Parse(json).RootElement;
+var models = JsonDocument.Parse(json);
 
 var results = models.SelectElements("$.persons[?(@.age > 3)]").ToList();
 ```
