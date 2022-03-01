@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <PackageVersion>1.0.2</PackageVersion>
-    <AssemblyVersion>1.0.0.2</AssemblyVersion>
-    <FileVersion>1.0.0.2</FileVersion>
+    <TargetFrameworks>netstandard2.1;net6.0</TargetFrameworks>
+    <PackageVersion>1.0.3</PackageVersion>
+    <AssemblyVersion>1.0.0.3</AssemblyVersion>
+    <FileVersion>1.0.0.3</FileVersion>
     <Authors>Adanies Zambrano</Authors>
     <Product>JsonDocumentPath</Product>
     <Description>JsonDocumentPath is a class library to extract values from JSON with single line expressions</Description>
-    <Copyright>Copyright © Adanies Zambrano 2020</Copyright>
+    <Copyright>Copyright © Adanies Zambrano 2020~2022</Copyright>
     <Summary>JsonDocumentPath is a class library to extract values from JSON (JsonDocument) with single line expressions. The code is a port of the jsonpath parser in Newtonsoft.Json.</Summary>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Title>JsonDocumentPath</Title>
@@ -18,7 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="4.7.2" />
+    <PackageReference Include="System.Text.Json" Version="4.7.2" Condition="'$(TargetFramework)' != 'net6.0'" />
   </ItemGroup>
   
 </Project>
