@@ -1197,7 +1197,17 @@ namespace JDocument.Test
             Assert.Equal(2, t.Count);
 
             t = o.SelectElements("$.prop[?(@.childProp =='365.23:59:59')]").ToList();
+
+            /*
+               Dotnet 6.0 JsonDocument Parse the TimeSpan as string '365.23:59:59'
+             */
+#if NET6_0
+            
+            Assert.Equal(2, t.Count);
+#else
             Assert.Equal(1, t.Count);
+#endif
+
         }
 
         [Fact]
