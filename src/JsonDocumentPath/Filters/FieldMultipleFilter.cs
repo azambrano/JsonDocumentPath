@@ -12,19 +12,19 @@ namespace System.Text.Json
             Names = names;
         }
 
-        public override IEnumerable<JsonElement?> ExecuteFilter(JsonElement root, IEnumerable<JsonElement?> current, bool errorWhenNoMatch)
+        public override IEnumerable<JsonElementExt> ExecuteFilter(JsonElement root, IEnumerable<JsonElementExt> current, bool errorWhenNoMatch)
         {
-            foreach (JsonElement t in current)
+            foreach (JsonElementExt t in current)
             {
-                if (t.ValueKind == JsonValueKind.Object)
+                if (t.Element.Value.ValueKind == JsonValueKind.Object)
                 {
                     foreach (string name in Names)
                     {
-                        if (t.TryGetProperty(name, out JsonElement v))
+                        if (t.Element.Value.TryGetProperty(name, out JsonElement v))
                         {
                             if (v.ValueKind != JsonValueKind.Null)
                             {
-                                yield return v;
+                                yield return new JsonElementExt(){ Element = v, Name = name };
                             }
                             else if (errorWhenNoMatch)
                             {

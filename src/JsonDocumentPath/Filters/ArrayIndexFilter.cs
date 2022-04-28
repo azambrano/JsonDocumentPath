@@ -6,13 +6,13 @@ namespace System.Text.Json
     {
         public int? Index { get; set; }
 
-        public override IEnumerable<JsonElement?> ExecuteFilter(JsonElement root, IEnumerable<JsonElement?> current, bool errorWhenNoMatch)
+        public override IEnumerable<JsonElementExt> ExecuteFilter(JsonElement root, IEnumerable<JsonElementExt> current, bool errorWhenNoMatch)
         {
-            foreach (JsonElement t in current)
+            foreach (JsonElementExt t in current)
             {
                 if (Index != null)
                 {
-                    JsonElement? v = GetTokenIndex(t, errorWhenNoMatch, Index.GetValueOrDefault());
+                    JsonElementExt v = GetTokenIndex(t.Element.Value, errorWhenNoMatch, Index.GetValueOrDefault());
 
                     if (v != null)
                     {
@@ -21,11 +21,11 @@ namespace System.Text.Json
                 }
                 else
                 {
-                    if (t.ValueKind == JsonValueKind.Array)
+                    if (t.Element?.ValueKind == JsonValueKind.Array)
                     {
-                        foreach (JsonElement v in t.EnumerateArray())
+                        foreach (JsonElement v in t.Element.Value.EnumerateArray())
                         {
-                            yield return v;
+                            yield return new JsonElementExt{ Element = v };
                         }
                     }
                     else

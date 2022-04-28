@@ -8,18 +8,18 @@ namespace System.Text.Json
         public int? End { get; set; }
         public int? Step { get; set; }
 
-        public override IEnumerable<JsonElement?> ExecuteFilter(JsonElement root, IEnumerable<JsonElement?> current, bool errorWhenNoMatch)
+        public override IEnumerable<JsonElementExt> ExecuteFilter(JsonElement root, IEnumerable<JsonElementExt> current, bool errorWhenNoMatch)
         {
             if (Step == 0)
             {
                 throw new JsonException("Step cannot be zero.");
             }
 
-            foreach (JsonElement t in current)
+            foreach (JsonElementExt t in current)
             {
-                if (t.ValueKind == JsonValueKind.Array)
+                if (t.Element.Value.ValueKind == JsonValueKind.Array)
                 {
-                    var aCount = t.GetArrayLength();
+                    var aCount = t.Element.Value.GetArrayLength();
                     // set defaults for null arguments
                     int stepCount = Step ?? 1;
                     int startIndex = Start ?? ((stepCount > 0) ? 0 : aCount - 1);
@@ -49,7 +49,7 @@ namespace System.Text.Json
                     {
                         for (int i = startIndex; IsValid(i, stopIndex, positiveStep); i += stepCount)
                         {
-                            yield return t[i];
+                            yield return new JsonElementExt(){ Element = t.Element.Value[i] };
                         }
                     }
                     else

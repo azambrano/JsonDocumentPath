@@ -4,26 +4,26 @@ namespace System.Text.Json
 {
     internal class FieldFilter : PathFilter
     {
-        internal string? Name;
+        internal string Name;
 
-        public FieldFilter(string? name)
+        public FieldFilter(string name)
         {
             Name = name;
         }
 
-        public override IEnumerable<JsonElement?> ExecuteFilter(JsonElement root, IEnumerable<JsonElement?> current, bool errorWhenNoMatch)
+        public override IEnumerable<JsonElementExt> ExecuteFilter(JsonElement root, IEnumerable<JsonElementExt> current, bool errorWhenNoMatch)
         {
-            foreach (JsonElement t in current)
+            foreach (JsonElementExt t in current)
             {
-                if (t.ValueKind == JsonValueKind.Object)
+                if (t.Element.Value.ValueKind == JsonValueKind.Object)
                 {
                     if (Name != null)
                     {
-                        if (t.TryGetProperty(Name, out JsonElement v))
+                        if (t.Element.Value.TryGetProperty(Name, out JsonElement v))
                         {
                             if (v.ValueKind != JsonValueKind.Null)
                             {
-                                yield return v;
+                                yield return new JsonElementExt(){Element = v, Name =Name };
                             }
                             else if (errorWhenNoMatch)
                             {
@@ -33,9 +33,9 @@ namespace System.Text.Json
                     }
                     else
                     {
-                        foreach (var p in t.ChildrenTokens())
+                        foreach (var p in t.Element.Value.ChildrenTokens())
                         {
-                            yield return p;
+                            yield return new JsonElementExt() {Element = p};
                         }
                     }
                 }

@@ -11,15 +11,15 @@ namespace System.Text.Json
             Expression = expression;
         }
 
-        public override IEnumerable<JsonElement?> ExecuteFilter(JsonElement root, IEnumerable<JsonElement?> current, bool errorWhenNoMatch)
+        public override IEnumerable<JsonElementExt> ExecuteFilter(JsonElement root, IEnumerable<JsonElementExt> current, bool errorWhenNoMatch)
         {
-            foreach (JsonElement t in current)
+            foreach (JsonElementExt t in current)
             {
-                foreach (var (_, Value) in GetNextScanValue(t))
+                foreach (var (name, v) in GetNextScanValue(t))
                 {
-                    if (Expression.IsMatch(root, Value))
+                    if (Expression.IsMatch(root, v.Element.Value))
                     {
-                        yield return Value;
+                        yield return new JsonElementExt(){ Element = v.Element, Name = name };
                     }
                 }
             }

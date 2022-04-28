@@ -12,9 +12,9 @@ namespace System.Text.Json
             Name = name;
         }
 
-        public override IEnumerable<JsonElement?> ExecuteFilter(JsonElement root, IEnumerable<JsonElement?> current, bool errorWhenNoMatch)
+        public override IEnumerable<JsonElementExt> ExecuteFilter(JsonElement root, IEnumerable<JsonElementExt> current, bool errorWhenNoMatch)
         {
-            foreach (JsonElement c in current)
+            foreach (JsonElementExt c in current)
             {
                 foreach (var e in GetNextScanValue(c))
                 {

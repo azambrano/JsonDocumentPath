@@ -897,14 +897,15 @@ namespace System.Text.Json
             }
         }
 
-        internal IEnumerable<JsonElement?> Evaluate(JsonElement root, JsonElement t, bool errorWhenNoMatch)
+        internal IEnumerable<JsonElementExt> Evaluate(JsonElement root, JsonElement t, bool errorWhenNoMatch)
         {
             return Evaluate(Filters, root, t, errorWhenNoMatch);
         }
 
-        internal static IEnumerable<JsonElement?> Evaluate(List<PathFilter> filters, JsonElement root, JsonElement t, bool errorWhenNoMatch)
+        internal static IEnumerable<JsonElementExt> Evaluate(List<PathFilter> filters, JsonElement root, JsonElement t, bool errorWhenNoMatch)
         {
-            IEnumerable<JsonElement?> current = new JsonElement?[] { t };
+            IEnumerable<JsonElementExt> current = new [] { new JsonElementExt{ Element = t }};
+
             foreach (PathFilter filter in filters)
             {
                 current = filter.ExecuteFilter(root, current, errorWhenNoMatch);

@@ -11,27 +11,27 @@ namespace System.Text.Json
             Expression = expression;
         }
 
-        public override IEnumerable<JsonElement?> ExecuteFilter(JsonElement root, IEnumerable<JsonElement?> current, bool errorWhenNoMatch)
+        public override IEnumerable<JsonElementExt> ExecuteFilter(JsonElement root, IEnumerable<JsonElementExt> current, bool errorWhenNoMatch)
         {
-            foreach (JsonElement el in current)
+            foreach (JsonElementExt el in current)
             {
-                if (el.ValueKind == JsonValueKind.Array)
+                if (el.Element.Value.ValueKind == JsonValueKind.Array)
                 {
-                    foreach (JsonElement v in el.EnumerateArray())
+                    foreach (JsonElement v in el.Element.Value.EnumerateArray())
                     {
                         if (Expression.IsMatch(root, v))
                         {
-                            yield return v;
+                            yield return new JsonElementExt(){ Element = v };
                         }
                     }
                 }
-                else if (el.ValueKind == JsonValueKind.Object)
+                else if (el.Element.Value.ValueKind == JsonValueKind.Object)
                 {
-                    foreach (JsonProperty v in el.EnumerateObject())
+                    foreach (JsonProperty v in el.Element.Value.EnumerateObject())
                     {
                         if (Expression.IsMatch(root, v.Value))
                         {
-                            yield return v.Value;
+                            yield return new JsonElementExt(){ Element = v.Value, Name = v.Name };
                         }
                     }
                 }

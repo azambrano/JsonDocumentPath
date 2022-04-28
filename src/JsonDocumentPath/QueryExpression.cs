@@ -81,11 +81,11 @@ namespace System.Text.Json
             Right = right;
         }
 
-        private IEnumerable<JsonElement?> GetResult(JsonElement root, JsonElement t, object? o)
+        private IEnumerable<JsonElementExt> GetResult(JsonElement root, JsonElement t, object? o)
         {
             if (o is JsonElement resultToken)
             {
-                return new JsonElement?[1] { resultToken };
+                return new JsonElementExt[1] { new JsonElementExt(){ Element=resultToken } };
             }
 
             if (o is List<PathFilter> pathFilters)
@@ -93,7 +93,7 @@ namespace System.Text.Json
                 return JsonDocumentPath.Evaluate(pathFilters, root, t, false);
             }
 
-            return Enumerable.Empty<JsonElement?>();
+            return Enumerable.Empty<JsonElementExt>();
         }
 
         public override bool IsMatch(JsonElement root, JsonElement t)
@@ -103,19 +103,19 @@ namespace System.Text.Json
                 return GetResult(root, t, Left).Any();
             }
 
-            using (IEnumerator<JsonElement?> leftResults = GetResult(root, t, Left).GetEnumerator())
+            using (IEnumerator<JsonElementExt> leftResults = GetResult(root, t, Left).GetEnumerator())
             {
                 if (leftResults.MoveNext())
                 {
-                    IEnumerable<JsonElement?> rightResultsEn = GetResult(root, t, Right);
-                    ICollection<JsonElement?> rightResults = rightResultsEn as ICollection<JsonElement?> ?? rightResultsEn.ToList();
+                    IEnumerable<JsonElementExt> rightResultsEn = GetResult(root, t, Right);
+                    ICollection<JsonElementExt> rightResults = rightResultsEn as ICollection<JsonElementExt> ?? rightResultsEn.ToList();
 
                     do
                     {
-                        JsonElement leftResult = leftResults.Current.Value;
-                        foreach (JsonElement rightResult in rightResults)
+                        JsonElement? leftResult = leftResults.Current.Element;
+                        foreach (JsonElementExt rightResult in rightResults)
                         {
-                            if (MatchTokens(leftResult, rightResult))
+                            if (MatchTokens(leftResult.Value, rightResult.Element.Value))
                             {
                                 return true;
                             }
