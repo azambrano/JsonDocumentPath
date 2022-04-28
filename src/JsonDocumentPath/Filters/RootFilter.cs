@@ -10,9 +10,15 @@ namespace System.Text.Json
         {
         }
 
-        public override IEnumerable<JsonElement?> ExecuteFilter(JsonElement root, IEnumerable<JsonElement?> current, bool errorWhenNoMatch)
+        public override IEnumerable<JsonElementExt> ExecuteFilter(JsonElement root, IEnumerable<JsonElementExt> current, bool errorWhenNoMatch)
         {
-            return new JsonElement?[1] { root };
+            return new List<JsonElementExt>()
+            {
+                new JsonElementExt()
+                {
+                     Element = root
+                }
+            };
         }
     }
 }

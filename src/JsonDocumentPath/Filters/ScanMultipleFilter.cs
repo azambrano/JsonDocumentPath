@@ -11,12 +11,10 @@ namespace System.Text.Json
             _names = names;
         }
 
-        public override IEnumerable<JsonElement?> ExecuteFilter(JsonElement root, IEnumerable<JsonElement?> current, bool errorWhenNoMatch)
+        public override IEnumerable<JsonElementExt> ExecuteFilter(JsonElement root, IEnumerable<JsonElementExt> current, bool errorWhenNoMatch)
         {
-            foreach (JsonElement c in current)
+            foreach (JsonElementExt c in current)
             {
-                JsonElement? value = c;
-
                 foreach (var e in GetNextScanValue(c))
                 {
                     if (e.Name != null)
@@ -25,7 +23,7 @@ namespace System.Text.Json
                         {
                             if (e.Name == name)
                             {
-                                yield return e.Value;
+                                yield return new JsonElementExt(){ Element = e.Value.Element, Name = e.Name };
                             }
                         }
                     }

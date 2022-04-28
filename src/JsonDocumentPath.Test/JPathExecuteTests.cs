@@ -75,6 +75,31 @@ namespace JDocument.Test
         }
 
         [Fact]
+        public void VerifyNameAndValue()
+        {
+            string json = @"{
+          ""persons"": [
+            {
+              ""name""  : ""John"",
+              ""age"": 26
+            },
+            {
+              ""name""  : ""Jane"",
+              ""age"": 2
+            }
+          ]
+        }";
+
+            var models = JsonDocument.Parse(json).RootElement;
+
+            var results = models.SelectExtElements("persons[*].name").ToList();
+
+            Assert.Equal(2, results.Count);
+            Assert.Equal("John", results[0].Element.ToString());
+            Assert.Equal("name", results[0].Name);
+        }
+
+        [Fact]
         public void RecursiveWildcard()
         {
             string json = @"{
@@ -572,7 +597,7 @@ namespace JDocument.Test
                 }";
             var document = JsonDocument.Parse(json).RootElement;
 
-            ExceptionAssert.Throws<JsonException>(() => { document.SelectElement("[*]", true); }, @"Index * not valid on JsonElement.");
+            ExceptionAssert.Throws<JsonException>(() => { document.SelectElement("[*]", true); }, @"Index * not valid on JsonElementExt.");
         }
 
         [Fact]
@@ -583,7 +608,7 @@ namespace JDocument.Test
                 }";
             var document = JsonDocument.Parse(json).RootElement;
 
-            ExceptionAssert.Throws<JsonException>(() => { document.SelectElement("[:]", true); }, @"Array slice is not valid on JsonElement.");
+            ExceptionAssert.Throws<JsonException>(() => { document.SelectElement("[:]", true); }, @"Array slice is not valid on JsonElementExt.");
         }
 
         [Fact]
@@ -610,7 +635,7 @@ namespace JDocument.Test
             string json = @"[1,2,3,4,5]";
             var document = JsonDocument.Parse(json).RootElement;
 
-            ExceptionAssert.Throws<JsonException>(() => { document.SelectElement("BlahBlah", true); }, @"Property 'BlahBlah' not valid on JsonElement.");
+            ExceptionAssert.Throws<JsonException>(() => { document.SelectElement("BlahBlah", true); }, @"Property 'BlahBlah' not valid on JsonElementExt.");
         }
 
         [Fact]
@@ -661,7 +686,7 @@ namespace JDocument.Test
         {
             var a = JsonDocument.Parse("[1,2,3,4,5]").RootElement;
 
-            ExceptionAssert.Throws<JsonException>(() => { a.SelectElement("['Missing','Missing2']", true); }, "Properties 'Missing', 'Missing2' not valid on JsonElement.");
+            ExceptionAssert.Throws<JsonException>(() => { a.SelectElement("['Missing','Missing2']", true); }, "Properties 'Missing', 'Missing2' not valid on JsonElementExt.");
         }
 
         [Fact]

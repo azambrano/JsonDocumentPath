@@ -11,13 +11,13 @@ namespace System.Text.Json
             Indexes = indexes;
         }
 
-        public override IEnumerable<JsonElement?> ExecuteFilter(JsonElement root, IEnumerable<JsonElement?> current, bool errorWhenNoMatch)
+        public override IEnumerable<JsonElementExt> ExecuteFilter(JsonElement root, IEnumerable<JsonElementExt> current, bool errorWhenNoMatch)
         {
-            foreach (JsonElement t in current)
+            foreach (JsonElementExt t in current)
             {
                 foreach (int i in Indexes)
                 {
-                    JsonElement? v = GetTokenIndex(t, errorWhenNoMatch, i);
+                    JsonElementExt v = GetTokenIndex(t.Element.Value, errorWhenNoMatch, i);
 
                     if (v != null)
                     {
