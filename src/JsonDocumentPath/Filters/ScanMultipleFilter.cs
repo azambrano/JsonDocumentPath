@@ -2,7 +2,7 @@
 
 namespace System.Text.Json
 {
-    internal class ScanMultipleFilter : PathFilter
+    internal partial class ScanMultipleFilter : PathFilter
     {
         private List<string> _names;
 

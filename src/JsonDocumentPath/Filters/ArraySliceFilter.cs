@@ -2,10 +2,12 @@
 
 namespace System.Text.Json
 {
-    internal class ArraySliceFilter : PathFilter
+    internal partial class ArraySliceFilter : PathFilter
     {
         public int? Start { get; set; }
+
         public int? End { get; set; }
+
         public int? Step { get; set; }
 
         public override IEnumerable<JsonElement?> ExecuteFilter(JsonElement root, IEnumerable<JsonElement?> current, bool errorWhenNoMatch)

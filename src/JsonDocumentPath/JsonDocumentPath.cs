@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
-using System.Text.RegularExpressions;
 
+#pragma warning disable IDE0130 // 命名空间与文件夹结构不匹配
 namespace System.Text.Json
+#pragma warning restore IDE0130 // 命名空间与文件夹结构不匹配
 {
     internal class JsonDocumentPath
     {
@@ -97,16 +98,19 @@ namespace System.Text.Json
                         followingIndexer = true;
                         followingDot = false;
                         break;
+
                     case ']':
                     case ')':
                         ended = true;
                         break;
+
                     case ' ':
                         if (_currentIndex < _expression.Length)
                         {
                             ended = true;
                         }
                         break;
+
                     case '.':
                         if (_currentIndex > currentPartStartIndex)
                         {
@@ -129,6 +133,7 @@ namespace System.Text.Json
                         followingIndexer = false;
                         followingDot = true;
                         break;
+
                     default:
                         if (query && (currentChar == '=' || currentChar == '<' || currentChar == '!' || currentChar == '>' || currentChar == '|' || currentChar == '&'))
                         {
@@ -659,27 +664,34 @@ namespace System.Text.Json
                         case 'b':
                             resolvedChar = '\b';
                             break;
+
                         case 't':
                             resolvedChar = '\t';
                             break;
+
                         case 'n':
                             resolvedChar = '\n';
                             break;
+
                         case 'f':
                             resolvedChar = '\f';
                             break;
+
                         case 'r':
                             resolvedChar = '\r';
                             break;
+
                         case '\\':
                             resolvedChar = '\\';
                             sb.Append('\\');//duplicate
                             break;
+
                         case '"':
                         case '\'':
                         case '/':
                             resolvedChar = currentChar;
                             break;
+
                         default:
                             throw new JsonException(@"Unknown escape character: \" + currentChar);
                     }
@@ -748,7 +760,7 @@ namespace System.Text.Json
                             }
 
                             _currentIndex++;
-                            sb.Append(currentChar);                           
+                            sb.Append(currentChar);
                         }
                         else
                         {
@@ -912,5 +924,21 @@ namespace System.Text.Json
 
             return current;
         }
+
+        //internal IEnumerable<JsonNode?> Evaluate(JsonNode root, JsonNode t, bool errorWhenNoMatch)
+        //{
+        //    return Evaluate(Filters, root, t, errorWhenNoMatch);
+        //}
+
+        //internal static IEnumerable<JsonNode?> Evaluate(List<PathFilter> filters, JsonNode root, JsonNode t, bool errorWhenNoMatch)
+        //{
+        //    IEnumerable<JsonNode?> current = new JsonNode?[] { t };
+        //    foreach (PathFilter filter in filters)
+        //    {
+        //        current = filter.ExecuteFilter(root, current, errorWhenNoMatch);
+        //    }
+
+        //    return current;
+        //}
     }
 }

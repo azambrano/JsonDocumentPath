@@ -2,7 +2,7 @@
 
 namespace System.Text.Json
 {
-    internal class RootFilter : PathFilter
+    internal partial class RootFilter : PathFilter
     {
         public static readonly RootFilter Instance = new RootFilter();
 

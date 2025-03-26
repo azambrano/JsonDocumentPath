@@ -2,7 +2,7 @@
 
 namespace System.Text.Json
 {
-    internal class FieldFilter : PathFilter
+    internal partial class FieldFilter : PathFilter
     {
         internal string? Name;
 

@@ -1,9 +1,14 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
+#if NET6_0_OR_GREATER
+
+using System.Text.Json.Nodes;
+
+#endif
 
 namespace System.Text.Json
 {
-    internal static class Extensions
+    internal static partial class Extensions
     {
         public static bool IsValue(this JsonElement src)
         {
@@ -14,10 +19,12 @@ namespace System.Text.Json
                    src.ValueKind == JsonValueKind.Null ||
                    src.ValueKind == JsonValueKind.Undefined;
         }
+
         public static bool IsContainer(this JsonElement src)
         {
             return src.ValueKind == JsonValueKind.Array || src.ValueKind == JsonValueKind.Object;
         }
+
         public static bool IsContainer(this JsonElement? src)
         {
             if (src.HasValue)
@@ -249,4 +256,177 @@ namespace System.Text.Json
             return -1;
         }
     }
+
+#if NET6_0 || NET7_0
+    internal partial class Extensions
+    {
+        public static JsonValueKind GetValueKind(this JsonNode jsonNode)
+        {
+            var el = JsonSerializer.SerializeToElement(jsonNode);
+
+            return el.ValueKind;
+        }
+    }
+#endif
+
+#if NET6_0_OR_GREATER
+
+    internal static partial class Extensions
+    {
+        public static bool IsValue(this JsonNode? src)
+        {
+            // JsonNode 无法表示 JsonValueKind.Null 但 null 是正常 JsonValue
+            if (src == null)
+                return true;
+
+            var nodeValueKind = src.GetSafeJsonValueKind();
+
+            return nodeValueKind == JsonValueKind.False ||
+                   nodeValueKind == JsonValueKind.True ||
+                   nodeValueKind == JsonValueKind.String ||
+                   nodeValueKind == JsonValueKind.Number ||
+                   nodeValueKind == JsonValueKind.Null ||
+                   nodeValueKind == JsonValueKind.Undefined;
+        }
+
+        public static bool IsContainer(this JsonNode src)
+        {
+            var nodeValueKind = src.GetSafeJsonValueKind();
+
+            return nodeValueKind == JsonValueKind.Array || nodeValueKind == JsonValueKind.Object;
+        }
+
+        public static bool TryGetFirstFromObject(this JsonNode? src, out JsonNode? element)
+        {
+            element = null;
+
+            if (src == null)
+                return false;
+
+            var nodeValueKind = src.GetSafeJsonValueKind();
+            if (nodeValueKind == JsonValueKind.Object)
+            {
+                var currentObject = src.AsObject();
+                var enumerator = currentObject.GetEnumerator();
+                if (enumerator.MoveNext())
+                {
+                    element = enumerator.Current.Value;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool TryMoveNextFromObject(this JsonNode? src, int cycle, out JsonNode? element)
+        {
+            element = null;
+
+            if (src == null)
+                return false;
+
+            var nodeValueKind = src.GetSafeJsonValueKind();
+
+            if (nodeValueKind == JsonValueKind.Object)
+            {
+                var currentObject = src.AsObject().GetEnumerator();
+                for (int i = 0; i < cycle; i++)
+                {
+                    currentObject.MoveNext();
+                }
+                element = currentObject.Current.Value;
+                return true;
+            }
+            return false;
+        }
+
+        public static IEnumerable<JsonNode?> ChildrenNodes(this JsonNode src)
+        {
+            var srcValueKind = src.GetSafeJsonValueKind();
+
+            if (srcValueKind == JsonValueKind.Object)
+            {
+                var srcObject = src.AsObject();
+                foreach (var item in srcObject)
+                {
+                    yield return item.Value;
+                }
+            }
+
+            if (srcValueKind == JsonValueKind.Array)
+            {
+                var srcArray = src.AsArray();
+                foreach (var item in srcArray)
+                {
+                    yield return item;
+                }
+            }
+        }
+
+        public static int CompareTo(this JsonNode value, JsonNode queryValue)
+        {
+            JsonValueKind comparisonType = (value.GetSafeJsonValueKind() == JsonValueKind.String && value.GetSafeJsonValueKind() != queryValue.GetSafeJsonValueKind())
+                                            ? queryValue.GetSafeJsonValueKind()
+                                            : value.GetSafeJsonValueKind();
+
+            return Compare(comparisonType, value, queryValue);
+        }
+
+        private static int Compare(JsonValueKind valueType, JsonNode objA, JsonNode objB)
+        {
+            JsonValueKind aValueKind = objA.GetSafeJsonValueKind();
+            JsonValueKind bValueKind = objB.GetSafeJsonValueKind();
+
+            /*Same types*/
+            if (aValueKind == JsonValueKind.Null && bValueKind == JsonValueKind.Null)
+            {
+                return 0;
+            }
+            if (aValueKind == JsonValueKind.Undefined && bValueKind == JsonValueKind.Undefined)
+            {
+                return 0;
+            }
+            if (aValueKind == JsonValueKind.True && bValueKind == JsonValueKind.True)
+            {
+                return 0;
+            }
+            if (aValueKind == JsonValueKind.False && bValueKind == JsonValueKind.False)
+            {
+                return 0;
+            }
+            if (aValueKind == JsonValueKind.Number && bValueKind == JsonValueKind.Number)
+            {
+                return objA.GetDouble().CompareTo(objB.GetDouble());
+            }
+            if (aValueKind == JsonValueKind.String && bValueKind == JsonValueKind.String)
+            {
+                return objA.GetString().CompareTo(objB.GetString());
+            }
+            //When objA is a number and objB is not.
+            if (aValueKind == JsonValueKind.Number)
+            {
+                var valueObjA = objA.GetDouble();
+                if (bValueKind == JsonValueKind.String)
+                {
+                    if (double.TryParse(objB.GetValue<string>().AsSpan().TrimStart('"').TrimEnd('"'), out double queryValueTyped))
+                    {
+                        return valueObjA.CompareTo(queryValueTyped);
+                    }
+                }
+            }
+            //When objA is a string and objB is not.
+            if (aValueKind == JsonValueKind.String)
+            {
+                if (bValueKind == JsonValueKind.Number)
+                {
+                    if (double.TryParse(objA.GetValue<string>().AsSpan().TrimStart('"').TrimEnd('"'), out double valueTyped))
+                    {
+                        return valueTyped.CompareTo(objB.GetDouble());
+                    }
+                }
+            }
+            return -1;
+        }
+    }
+
+#endif
 }

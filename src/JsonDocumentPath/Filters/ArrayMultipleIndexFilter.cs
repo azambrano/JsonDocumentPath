@@ -2,7 +2,7 @@
 
 namespace System.Text.Json
 {
-    internal class ArrayMultipleIndexFilter : PathFilter
+    internal partial class ArrayMultipleIndexFilter : PathFilter
     {
         internal List<int> Indexes;
 

@@ -21,7 +21,7 @@ namespace System.Text.Json
         StrictNotEquals = 12
     }
 
-    internal abstract class QueryExpression
+    internal abstract partial class QueryExpression
     {
         internal QueryOperator Operator;
 
@@ -33,7 +33,7 @@ namespace System.Text.Json
         public abstract bool IsMatch(JsonElement root, JsonElement t);
     }
 
-    internal class CompositeExpression : QueryExpression
+    internal partial class CompositeExpression : QueryExpression
     {
         public List<QueryExpression> Expressions { get; set; }
 
@@ -55,6 +55,7 @@ namespace System.Text.Json
                         }
                     }
                     return true;
+
                 case QueryOperator.Or:
                     foreach (QueryExpression e in Expressions)
                     {
@@ -64,13 +65,14 @@ namespace System.Text.Json
                         }
                     }
                     return false;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
     }
 
-    internal class BooleanQueryExpression : QueryExpression
+    internal partial class BooleanQueryExpression : QueryExpression
     {
         public readonly object Left;
         public readonly object? Right;
@@ -139,54 +141,63 @@ namespace System.Text.Json
                             return true;
                         }
                         break;
+
                     case QueryOperator.Equals:
                         if (EqualsWithStringCoercion(leftResult, rightResult))
                         {
                             return true;
                         }
                         break;
+
                     case QueryOperator.StrictEquals:
                         if (EqualsWithStrictMatch(leftResult, rightResult))
                         {
                             return true;
                         }
                         break;
+
                     case QueryOperator.NotEquals:
                         if (!EqualsWithStringCoercion(leftResult, rightResult))
                         {
                             return true;
                         }
                         break;
+
                     case QueryOperator.StrictNotEquals:
                         if (!EqualsWithStrictMatch(leftResult, rightResult))
                         {
                             return true;
                         }
                         break;
+
                     case QueryOperator.GreaterThan:
                         if (leftResult.CompareTo(rightResult) > 0)
                         {
                             return true;
                         }
                         break;
+
                     case QueryOperator.GreaterThanOrEquals:
                         if (leftResult.CompareTo(rightResult) >= 0)
                         {
                             return true;
                         }
                         break;
+
                     case QueryOperator.LessThan:
                         if (leftResult.CompareTo(rightResult) < 0)
                         {
                             return true;
                         }
                         break;
+
                     case QueryOperator.LessThanOrEquals:
                         if (leftResult.CompareTo(rightResult) <= 0)
                         {
                             return true;
                         }
                         break;
+
                     case QueryOperator.Exists:
                         return true;
                 }
@@ -247,35 +258,39 @@ namespace System.Text.Json
         internal static bool EqualsWithStrictMatch(JsonElement value, JsonElement queryValue)
         {
             // we handle floats and integers the exact same way, so they are pseudo equivalent
-            if (value.ValueKind != queryValue.ValueKind)
+
+            JsonValueKind thisValueKind = value.ValueKind;
+            JsonValueKind queryValueKind = queryValue.ValueKind;
+
+            if (thisValueKind != queryValueKind)
             {
                 return false;
             }
 
             // Handle comparing an integer with a float
             // e.g. Comparing 1 and 1.0
-            if (value.ValueKind == JsonValueKind.Number && queryValue.ValueKind == JsonValueKind.Number)
+            if (thisValueKind == JsonValueKind.Number && queryValueKind == JsonValueKind.Number)
             {
                 return value.GetDouble() == queryValue.GetDouble();
             }
 
-            if (value.ValueKind == JsonValueKind.String && queryValue.ValueKind == JsonValueKind.String)
+            if (thisValueKind == JsonValueKind.String && queryValueKind == JsonValueKind.String)
             {
                 return value.GetString() == queryValue.GetString();
             }
 
-            if (value.ValueKind == JsonValueKind.Null && queryValue.ValueKind == JsonValueKind.Null)
+            if (thisValueKind == JsonValueKind.Null && queryValueKind == JsonValueKind.Null)
             {
                 return true;
             }
 
-            if (value.ValueKind == JsonValueKind.Undefined && queryValue.ValueKind == JsonValueKind.Undefined)
+            if (thisValueKind == JsonValueKind.Undefined && queryValueKind == JsonValueKind.Undefined)
             {
                 return true;
             }
 
-            if ((value.ValueKind == JsonValueKind.False || value.ValueKind == JsonValueKind.True) && 
-                (queryValue.ValueKind == JsonValueKind.False || queryValue.ValueKind == JsonValueKind.True))
+            if ((thisValueKind == JsonValueKind.False || thisValueKind == JsonValueKind.True) &&
+                (queryValueKind == JsonValueKind.False || queryValueKind == JsonValueKind.True))
             {
                 return value.GetBoolean() == queryValue.GetBoolean();
             }
@@ -294,12 +309,15 @@ namespace System.Text.Json
                     case 'i':
                         options |= RegexOptions.IgnoreCase;
                         break;
+
                     case 'm':
                         options |= RegexOptions.Multiline;
                         break;
+
                     case 's':
                         options |= RegexOptions.Singleline;
                         break;
+
                     case 'x':
                         options |= RegexOptions.ExplicitCapture;
                         break;

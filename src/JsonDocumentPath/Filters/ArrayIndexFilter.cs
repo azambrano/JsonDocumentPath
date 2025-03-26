@@ -2,7 +2,7 @@
 
 namespace System.Text.Json
 {
-    internal class ArrayIndexFilter : PathFilter
+    internal partial class ArrayIndexFilter : PathFilter
     {
         public int? Index { get; set; }
 

@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace System.Text.Json
 {
-    internal class FieldMultipleFilter : PathFilter
+    internal partial class FieldMultipleFilter : PathFilter
     {
         internal List<string> Names;
 

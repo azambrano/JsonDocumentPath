@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace System.Text.Json
 {
-    internal class ScanFilter : PathFilter
+    internal partial class ScanFilter : PathFilter
     {
         internal string? Name;
 

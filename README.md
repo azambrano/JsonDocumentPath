@@ -45,4 +45,8 @@ Because JsonDocumentPath is using the same Json.net strategic for parsing and ev
 - [x] JPathParseTests
 - [x] QueryExpressionTests
 - [x] JPathExecuteTests
+- [x] JsonNodeParseTests
+- [x] JsonNodePathExecuteTests
+- [x] JsonNodeQueryExpressionTests
+- [x] JsonNodeRefTests
 

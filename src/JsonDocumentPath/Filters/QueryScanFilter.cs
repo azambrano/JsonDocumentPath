@@ -2,7 +2,7 @@
 
 namespace System.Text.Json
 {
-    internal class QueryScanFilter : PathFilter
+    internal partial class QueryScanFilter : PathFilter
     {
         internal QueryExpression Expression;
 

@@ -19,6 +19,7 @@ namespace JDocument.Test
             Assert.Equal(jObj, aa);
 
             var bb = jObj.SelectElement("$..[?(@.usingmem>27000)]");//null, 27,000
+
             Assert.Equal(jObj, bb);
 
             var cc = jObj.SelectElement("$..[?(@.usingmem>21437)]");//found, 21,437
@@ -1201,13 +1202,12 @@ namespace JDocument.Test
             /*
                Dotnet 6.0 JsonDocument Parse the TimeSpan as string '365.23:59:59'
              */
-#if NET6_0
-            
+#if NET6_0_OR_GREATER
+
             Assert.Equal(2, t.Count);
 #else
             Assert.Equal(1, t.Count);
 #endif
-
         }
 
         [Fact]
@@ -1431,6 +1431,7 @@ namespace JDocument.Test
         }
 
         public const string IsoDateFormat = "yyyy-MM-ddTHH:mm:ss.FFFFFFFK";
+
         [Fact]
         public void RootInFilterWithInitializers()
         {
